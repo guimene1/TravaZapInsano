@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Mensagem | WhatsApp Hack-Workshop</title>
+    <script>
+        async function enviarMensagem(event) {
+            event.preventDefault(); // Previne o envio padrão do formulário
+
+            const number = document.getElementById('number').value;
+            const message = document.getElementById('message').value;
+
+            try {
+                for (let i = 0; i < 20; i++) { // Envia a mensagem 20 vezes
+                    const response = await fetch('/send-message', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ number, message }),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        console.error('Erro ao enviar a mensagem:', data);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao enviar a mensagem:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Envie uma Mensagem via WhatsApp</h1>
+
+    <form onsubmit="enviarMensagem(event)">
+        <label for="number">Número:</label><br>
+        <input type="text" id="number" name="number" required><br><br>
+
+        <label for="message">Mensagem:</label><br>
+        <textarea id="message" name="message" rows="4" required></textarea><br><br>
+
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>

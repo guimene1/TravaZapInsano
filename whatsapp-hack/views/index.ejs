@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Qr Code | WhatsApp Hack-Workshop</title>
+    </head>
+    <body>
+        <center>  
+            <h1>WhatsApp Hack-Workshop</h1>
+            <p id="status"></p>
+            <img id="qr"/>
+        </center> 
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            const socket = io();
+
+            const loading_icon_url = `https://riberman.github.io/static/img/dev/loading.gif`;
+            const ok_icon_url = `https://riberman.github.io/static/img/dev/ok_icon.png`;
+
+            //Recebe o status e QR do Venom (app.js)
+            setQr('<%= venomQR %>');
+            setStatus('<%= venomStatus %>');
+
+            //Recebe o status do Venom (Socket.io)
+            socket.on('status', (status) => {
+                setStatus(status);
+            });
+
+            //Recebe QR code (Socket.io)
+            socket.on('qr', (qrCode) => {
+            if (qrCode) {
+                setQr(qrCode);
+            } else {
+                setQr(loading_icon_url);
+            }
+            });
+
+            //Altera Status na tag <p id="status">
+            function setStatus(status) {
+                const statusDiv = document.getElementById('status');
+        
+                switch (status) {
+                    case 'notLogged':
+                        statusDiv.innerHTML = 'Efetue a leitura do QR Code.';
+                        break;
+                    case 'successChat':
+                    case 'CONNECTED':
+                        setQr(ok_icon_url);
+                        statusDiv.innerHTML = 'Chat estabelecido com sucesso.';
+                        break;
+                    default:
+                        setQr(loading_icon_url);
+                        statusDiv.innerHTML = 'Carregando WhatsApp aguarde.';
+                        break;
+                }
+            }
+
+            //Altera Imagem na tag <img id="qr">
+            function setQr(image) {
+                const qrDiv = document.getElementById('qr');
+                qrDiv.src = image;
+            }
+        </script>
+    </body>
+</html>  
